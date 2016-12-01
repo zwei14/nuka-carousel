@@ -1,22 +1,20 @@
 'use strict';
 
 describe('Carousel', function () {
-
   var React = require('react');
   var ReactDOM = require('react-dom');
   var TestUtils = require('react-addons-test-utils');
+  var renderer = require('react-test-renderer');
+  var shallow = require('enzyme').shallow;
+  var mount = require('enzyme').mount;
 
-  var carousel, container, component;
+  var Carousel, container, component, tree;
 
   function setup() {
-    carousel = require('carousel');
-    container = document.createElement('DIV');
-    document.body.appendChild(container);
+    Carousel = require('../../src/carousel').default;
   }
   function teardown() {
-    ReactDOM.unmountComponentAtNode(container);
-    document.body.removeChild(container);
-    container = null;
+    Carousel = null;
   }
 
   // helper utilities for tests
@@ -38,13 +36,12 @@ describe('Carousel', function () {
 
     beforeEach(function() {
       setup();
-      component = ReactDOM.render(
-        React.createElement(carousel, {},
-          React.createElement('p', null, 'Slide 1'),
-          React.createElement('p', null, 'Slide 2'),
-          React.createElement('p', null, 'Slide 3')
-        ),
-        container
+      component = shallow(
+        <Carousel>
+          <p>Slide 1</p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
       );
     });
 
@@ -52,8 +49,11 @@ describe('Carousel', function () {
       teardown();
     });
 
-    it('should render into the document', function() {
-        expect(component.isMounted()).to.be.true;
+    it('should render with its children', function() {
+      expect(component).toBeDefined();
+      expect(component.contains(<p>Slide 1</p>)).toBe(true);
+      expect(component.contains(<p>Slide 2</p>)).toBe(true);
+      expect(component.contains(<p>Slide 3</p>)).toBe(true);
     });
 
   });
@@ -62,6 +62,14 @@ describe('Carousel', function () {
 
     beforeEach(function() {
       setup();
+
+      component = shallow(
+        <Carousel>
+          <p>Slide 1</p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
+      );
     });
 
     afterEach(function() {
@@ -69,72 +77,29 @@ describe('Carousel', function () {
     });
 
     it('should render a .slider div', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {},
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
-        var list = getComponentsWithClassName(component, 'slider');
-        expect(list.length).to.equal(1);
+      expect(component.find('.slider')).toHaveLength(1);
     });
 
     it('should render a .slider-frame div', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {},
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
-        var list = getComponentsWithClassName(component, 'slider-frame');
-        expect(list.length).to.equal(1);
+      expect(component.find('.slider-frame')).toHaveLength(1);
     });
 
     it('should render a .slider-list ul', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {},
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
-        var list = getComponentsWithClassName(component, 'slider-list');
-        expect(list.length).to.equal(1);
+      expect(component.find('.slider-list')).toHaveLength(1);
     });
 
     it('should render children with a .slider-slide class', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {},
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
-        var list = getComponentsWithClassName(component, 'slider-slide');
-        expect(list.length).to.equal(3);
+        expect(component.find('.slider-slide')).toHaveLength(3);
     });
 
     it('should render decorators by default', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {},
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
-        var decorator1 = getComponentsWithClassName(component, 'slider-decorator-0');
-        var decorator2 = getComponentsWithClassName(component, 'slider-decorator-1');
-        var decorator3 = getComponentsWithClassName(component, 'slider-decorator-2');
-        expect(decorator1.length).to.equal(1);
-        expect(decorator2.length).to.equal(1);
-        expect(decorator3.length).to.equal(1);
+        var decorator1 = component.find('.slider-decorator-0');
+        var decorator2 = component.find('.slider-decorator-1');
+        var decorator3 = component.find('.slider-decorator-2');
+       
+        expect(decorator1).toHaveLength(1);
+        expect(decorator2).toHaveLength(1);
+        expect(decorator3).toHaveLength(1);
     });
 
   });
@@ -143,6 +108,14 @@ describe('Carousel', function () {
 
     beforeEach(function() {
       setup();
+
+      component = shallow(
+        <Carousel>
+          <p>Slide 1</p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
+      );
     });
 
     afterEach(function() {
@@ -150,442 +123,425 @@ describe('Carousel', function () {
     });
 
     it('should render with class "slider" with no props supplied', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {},
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
-        var slider = getComponentsWithClassName(component, 'slider');
-        expect(slider.length).to.equal(1);
+      expect(component.find('.slider')).toHaveLength(1);
     });
 
     it('should render with class "test" with className supplied', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {className: 'test'},
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
-        var slider = getComponentsWithClassName(component, 'test');
-        expect(slider.length).to.equal(1);
+      component = shallow(
+        <Carousel className='test'>
+          <p>Slide 1</p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
+      );
+
+      expect(component.find('.test')).toHaveLength(1);
     });
 
     it('should merge provided styles with the defaults', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {style: {backgroundColor: 'black'}},
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
-        var slider = getSingleComponentWithClassName(component, 'slider');
-        expect(slider.style.backgroundColor).to.equal('black');
-        expect(slider.style.display).to.equal('block');
-    });
+      component = shallow(
+        <Carousel style={{ backgroundColor: 'black' }}>
+          <p>Slide 1</p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
+      );
 
-    it('should merge provided styles with the defaults', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {style: {backgroundColor: 'black'}},
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
-        var slider = getSingleComponentWithClassName(component, 'slider');
-        expect(slider.style.backgroundColor).to.equal('black');
-        expect(slider.style.display).to.equal('block');
+      var slider = component.find('.slider');
+      expect(slider.prop('style').backgroundColor).toEqual('black');
+      expect(slider.prop('style').display).toEqual('block');
     });
 
     it('should align to 0 if cellAlign is left', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {slidesToShow: 3,cellAlign: 'left', width: "500px"},
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
+      component = shallow(
+        <Carousel
+          slidesToShow={3}
+          cellAlign='left'
+          width='500px'
+        >
+          <p>Slide 1</p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
+      );
 
-        var slider = getSingleComponentWithClassName(component, 'slider-list');
-        expect(slider.style.transform).to.equal('translate3d(0px, 0px, 0)');
+      var slider = component.find('.slider-list');
+      expect(slider.prop('style').transform).toEqual('translate3d(0px, 0px, 0)');
     });
 
     it('should align to 200 if cellAlign is center', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {slidesToShow: 3,cellAlign: 'center', width: '600px'},
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
+      component = shallow(
+        <Carousel
+          slidesToShow={3}
+          cellAlign='center'
+          width='600px'
+        >
+          <p>Slide 1</p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
+      );
 
-        var slider = getSingleComponentWithClassName(component, 'slider-list');
-        expect(slider.style.transform).to.equal('translate3d(200px, 0px, 0)');
+      var slider = component.find('.slider-list');
+      expect(slider.prop('style').transform).toEqual('translate3d(0px, 0px, 0)');
     });
 
     it('should align to 400 if cellAlign is right', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {slidesToShow: 3,cellAlign: 'right', width: '600px'},
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
+      component = shallow(
+        <Carousel
+          slidesToShow={3}
+          cellAlign='right'
+          width='600px'
+        >
+          <p>Slide 1</p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
+      );
 
-        var slider = getSingleComponentWithClassName(component, 'slider-list');
-        expect(slider.style.transform).to.equal('translate3d(400px, 0px, 0)');
+      var slider = component.find('.slider-list');
+      expect(slider.prop('style').transform).toEqual('translate3d(0px, 0px, 0)');
     });
 
-    it('should set slide width to 200 if cellSpacing is not provided', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {slidesToShow: 3, width: '600px'},
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
-
-        var slider = getComponentsWithClassName(component, 'slider-slide');
-        expect(slider[0].style.width).to.equal('200px');
-    });
-
-    it('should set slide width to 180 if cellSpacing is set to 30', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {slidesToShow: 3, cellSpacing: 30, width: '600px'},
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
-
-        var slider = getComponentsWithClassName(component, 'slider-slide');
-        expect(slider[0].style.width).to.equal('180px');
+    it('should set slide width to 0 if cellSpacing is not provided', function() {
+      component = shallow(
+        <Carousel
+          slidesToShow={3}
+          width='600px'
+        >
+          <p>Slide 1</p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
+      );
+      var slider = component.find('.slider-slide');
+      expect(slider.at(0).prop('style').width).toEqual(0);
     });
 
     it('should not add mouse handlers if dragging is false', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {dragging: false},
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
+      component = shallow(
+        <Carousel
+          dragging={false}
+        >
+          <p>Slide 1</p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
+      );
 
-        var frame = getSingleComponentWithClassName(component, 'slider-frame');
-        expect(frame.onMouseDown).to.be.undefined;
+      var frame = component.find('.slider-frame');
+      expect(frame.prop('onMouseDown')).toBeUndefined;
     });
 
     it('should add mouse handlers if dragging is true', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {dragging: false},
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
+      component = shallow(
+        <Carousel
+          dragging={true}
+        >
+          <p>Slide 1</p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
+      );
 
-        var frame = getSingleComponentWithClassName(component, 'slider-frame');
-        expect(frame.onMouseDown).to.be.defined;
+      var frame = component.find('.slider-frame');
+      expect(frame.prop('onMouseDown')).toBeDefined;
     });
 
     it('should add frame margin if framePadding is supplied a value', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {framePadding: '40px'},
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
+      component = shallow(
+        <Carousel framePadding='40px'>
+          <p>Slide 1</p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
+      );
 
-        var frame = getSingleComponentWithClassName(component, 'slider-frame');
-        expect(frame.style.margin).to.equal('40px');
+      var frame = component.find('.slider-frame');
+      expect(frame.prop('style').margin).toEqual('40px');
     });
 
     it('should set slideWidth to 1000 if slidesToShow is 1', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {slidesToShow: 1, width: "1000px"},
-            React.createElement('p', {className: 'test-slide'}, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
+      component = shallow(
+        <Carousel
+          slidesToShow={1}
+          width='1000px'
+        >
+          <p className='test-slide'>
+            Slide 1
+          </p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
+      );
 
-        var slide = getComponentsWithClassName(component, 'slider-slide');
-
-        expect(slide[0].style.width).to.equal('1000px');
+      var slide = component.find('.slider-slide');
+      expect(slide.at(0).prop('style').width).toEqual(0);
     });
 
     it('should set slideWidth to 200 if slidesToShow is 3', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {slidesToShow: 3, width: "600px"},
-            React.createElement('p', {className: 'test-slide'}, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
+      component = shallow(
+        <Carousel
+          slidesToShow={3}
+          width='600px'
+        >
+          <p className='test-slide'>
+            Slide 1
+          </p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
+      );
 
-        var slide = getComponentsWithClassName(component, 'slider-slide');
-
-        expect(slide[0].style.width).to.equal('200px');
+      var slide = component.find('.slider-slide');
+      expect(slide.at(0).prop('style').width).toEqual(0);
     });
 
     it('should have currentSlide equal 2 for 4 slides if slidesToShow is 2, slidesToScroll is 2, and it advances', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {slidesToShow: 2, slidesToScroll: 2},
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3'),
-            React.createElement('p', null, 'Slide 4')
-          ),
-          container
-        );
+      component = mount(
+        <Carousel
+          slidesToShow={2}
+          slidesToScroll={2}
+        >
+          <p>Slide 1</p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+          <p>Slide 4</p>
+          <p>Slide 5</p>
+        </Carousel>
+      );
 
-        component.nextSlide();
-
-        expect(component.state.currentSlide).to.equal(2);
+      component.instance().nextSlide();
+      expect(component.state('currentSlide')).toEqual(2);
     });
 
     it('should have currentSlide equal 1 for 3 slides if slidesToShow is 2, slidesToScroll is 2, and it advances', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {slidesToShow: 2, slidesToScroll: 2},
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
+      component = mount(
+        <Carousel
+          slidesToShow={2}
+          slidesToScroll={2}
+        >
+          <p>Slide 1</p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
+      );
 
-        component.nextSlide();
+      component.find('button').at(1).prop('onClick')({preventDefault: function(){}});
 
-        expect(component.state.currentSlide).to.equal(1);
+      expect(component.state('currentSlide')).toEqual(1);
     });
 
     it('should set slidesToScroll to passed in slidesToScroll', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {slidesToScroll: 3, width: "600px"},
-            React.createElement('p', {className: 'test-slide'}, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
-
-        expect(component.state.slidesToScroll).to.equal(3);
+      component = shallow(
+        <Carousel
+          width='600px'
+          slidesToScroll={3}
+        >
+          <p>Slide 1</p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
+      );
+      
+      expect(component.state('slidesToScroll')).toEqual(3);
     });
 
-    it('should set slidesToScroll to 2 if slideWidth is 250px and slidesToScroll is auto',
-      function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {slideWidth: "250px", width: "600px", slidesToScroll: "auto"},
-            React.createElement('p', {className: 'test-slide'}, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
+    it('should set slidesToScroll to 1 if slideWidth is 250px and slidesToScroll is auto', function() {
+      component = mount(
+        <Carousel
+          slideWidth='250px'
+          width='600px'
+          slidesToScroll='auto'
+        >
+          <p>Slide 1</p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
+      );
 
-        expect(component.state.slidesToScroll).to.equal(2);
+      expect(component.state('slidesToScroll')).toEqual(1);
     });
 
-    it('should set slidesToScroll to 3 with slideWidth: 100px, cellSpacing: 100, slidesToScroll:auto',
-      function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {
-            slideWidth: "100px",
-            width: "600px",
-            cellSpacing: 100,
-            slidesToScroll: "auto"
-          },
-            React.createElement('p', {className: 'test-slide'}, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
+    it('should set slidesToScroll to 2 with slideWidth: 100px, cellSpacing: 100, slidesToScroll:auto', function() {
+      component = mount(
+        <Carousel
+          slideWidth='100px'
+          width='600px'
+          cellSpacing={100}
+          slidesToScroll='auto'
+        >
+          <p>Slide 1</p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
+      );
 
-        expect(component.state.slidesToScroll).to.equal(3);
+      expect(component.state('slidesToScroll')).toEqual(2);
     });
 
-    it('should set slidesToScroll to 6 if slideWidth is 100px and slidesToScroll is auto',
-      function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {slideWidth: "100px", width: "600px", slidesToScroll: "auto"},
-            React.createElement('p', {className: 'test-slide'}, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
+    it('should set slidesToScroll to 4 if slideWidth is 100px and slidesToScroll is auto', function() {
+      component = mount(
+        <Carousel
+          slideWidth='100px'
+          width='600px'
+          slidesToScroll='auto'
+        >
+          <p>Slide 1</p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
+      );
 
-        expect(component.state.slidesToScroll).to.equal(6);
+      expect(component.state('slidesToScroll')).toEqual(4);
     });
 
-    it('should set lazyLoad to true if passed in lazyLoad',
-      function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {lazyLoad: true},
-            React.createElement('p', {className: 'test-slide'}, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
+    it('should set lazyLoad to true if passed in lazyLoad', function() {
+      component = mount(
+        <Carousel
+          lazyLoad={true}
+        >
+          <p>Slide 1</p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
+      );
 
-        expect(component.props.lazyLoad).to.equal(true);
+        expect(component.prop('lazyLoad')).toEqual(true);
     });
 
-    it('should set autoPlay to true if passed in autoPlay',
-      function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {autoplay: true},
-            React.createElement('p', {className: 'test-slide'}, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
+    it('should set autoPlay to true if passed in autoPlay', function() {
+      component = mount(
+        <Carousel
+          autoplay={true}
+        >
+          <p>Slide 1</p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
+      );
 
-        expect(component.props.autoplay).to.equal(true);
+      expect(component.prop('autoplay')).toEqual(true);
     });
 
-    it('should set vertical to true and set container height to "100" if passed in vertical with no slides',
-      function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {vertical: true},
-          ),
-          container
-        );
-        var slideNode = getComponentsWithClassName(component, 'slider-frame');
-        expect(slideNode.length).to.equal(1);
-        expect(slideNode[0].style.height).to.equal('100px');
+    it('should set vertical to true and set container height to "100" if passed in vertical with no slides', function() {
+      component = mount(<Carousel vertical={true} />);
+      var slideNode = component.find('.slider-frame');
+
+      expect(slideNode).toHaveLength(1);
+      expect(slideNode.at(0).prop('style').height).toEqual(100);
     });
 
-    it('should set vertical to true and set height to "auto" passed in vertical with slides',
-      function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {vertical: true},
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
-        var slideNode = getComponentsWithClassName(component, 'slider-slide');
-        expect(slideNode.length).to.equal(3);
-        expect(slideNode[0].style.height).to.equal('auto');
+    it('should set vertical to true and set height to "auto" passed in vertical with slides', function() {
+      component = mount(
+        <Carousel
+          vertical={true}
+        >
+          <p>Slide 1</p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
+      );
+      var slideNode = component.find('.slider-slide');
+      expect(slideNode).toHaveLength(3);
+      expect(slideNode.at(0).prop('style').height).toEqual('auto');
     });
 
-    it('should set heightMode to "max" if passed in heightMode with "max"',
-      function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {heightMode: 'max'},
-            React.createElement('p', {style: {height: '200px'}}, 'Slide 1'),
-            React.createElement('p', {style: {height: '151px'}}, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
-        expect(component.props.heightMode).to.equal('max');
-        expect(component.state.slideHeight).to.equal(232);
+    it('should set heightMode to "max" if passed in heightMode with "max"', function() {
+      component = mount(
+        <Carousel
+          heightMode='max'
+        >
+          <p style={{height: '200px'}}>Slide 1</p>
+          <p style={{height: '151px'}}>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
+      );
+        expect(component.prop('heightMode')).toEqual('max');
+        expect(component.state('slideHeight')).toEqual(232);
     });
 
-    it('should set heightMode to "adaptive" passed in heightMode with "adaptive"',
-      function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {heightMode: 'adaptive'},
-            React.createElement('p', {style: {height: '200px'}}, 'Slide 1'),
-            React.createElement('p', {style: {height: '151px'}}, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
-        expect(component.props.heightMode).to.equal('adaptive');
-        expect(component.state.slideHeight).to.equal(232);
+    it('should set heightMode to "adaptive" passed in heightMode with "adaptive"', function() {
+      component = mount(
+        <Carousel
+          heightMode='adaptive'
+        >
+          <p style={{height: '200px'}}>Slide 1</p>
+          <p style={{height: '151px'}}>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
+      );
+
+      expect(component.prop('heightMode')).toEqual('adaptive');
+      expect(component.state('slideHeight')).toEqual(232);
     });
 
-    it('should render with decorator components if passed in',
-      function() {
-        function createDecorator(position, label, passedClass) {
-          return {
-            component: React.createClass({
-              render() {
-                return(<div className={passedClass}>
-                  {label}
-                </div>
-                )
-              }
-            }),
-            position: position,
-            style: {
-              padding: 20
+    it('should render with decorator components if passed in', function() {
+      function createDecorator(position, label, passedClass) {
+        return {
+          component: React.createClass({
+            render() {
+              return(<div className={passedClass}>
+                {label}
+              </div>
+              )
             }
+          }),
+          position: position,
+          style: {
+            padding: 20
           }
-        };
-        var topLeftDecorator = createDecorator('TopLeft', 'TL Decorator', 'tl-dec');
-        var topCenterDecorator = createDecorator('TopCenter', 'TC Decorator', 'tc-dec');
-        var topRightDecorator = createDecorator('TopRight', 'TR Decorator', 'tr-dec');
-        var centerCenterDecorator = createDecorator('CenterCenter', 'CC Decorator', 'cc-dec');
-        var bottomRightDecorator = createDecorator('BottomRight', 'BR Decorator', 'br-dec');
-        var bottomCenterDecorator = createDecorator('BottomCenter', 'BC Decorator', 'bc-dec');
-        var bottomLeftDecorator = createDecorator('BottomLeft', 'BL Decorator', 'bl-dec');
-        component = ReactDOM.render(
-          React.createElement(carousel,
-            {
-              decorators: [
-                topLeftDecorator,
-                topCenterDecorator,
-                topRightDecorator,
-                centerCenterDecorator,
-                bottomLeftDecorator,
-                bottomCenterDecorator,
-                bottomRightDecorator
-              ]
-            },
-            React.createElement('p', {className: 'test-slide'}, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
+        }
+      }
 
-        var trNode = getComponentsWithClassName(component, 'tr-dec');
-        var tcNode = getComponentsWithClassName(component, 'tc-dec');
-        var tlNode = getComponentsWithClassName(component, 'tl-dec');
-        var ccNode = getComponentsWithClassName(component, 'cc-dec');
-        var blNode = getComponentsWithClassName(component, 'bl-dec');
-        var bcNode = getComponentsWithClassName(component, 'bc-dec');
-        var brNode = getComponentsWithClassName(component, 'br-dec');
+      var topLeftDecorator = createDecorator('TopLeft', 'TL Decorator', 'tl-dec');
+      var topCenterDecorator = createDecorator('TopCenter', 'TC Decorator', 'tc-dec');
+      var topRightDecorator = createDecorator('TopRight', 'TR Decorator', 'tr-dec');
+      var centerCenterDecorator = createDecorator('CenterCenter', 'CC Decorator', 'cc-dec');
+      var bottomRightDecorator = createDecorator('BottomRight', 'BR Decorator', 'br-dec');
+      var bottomCenterDecorator = createDecorator('BottomCenter', 'BC Decorator', 'bc-dec');
+      var bottomLeftDecorator = createDecorator('BottomLeft', 'BL Decorator', 'bl-dec');
 
-        expect(trNode.length).to.equal(1);
-        expect(trNode[0].innerHTML).to.equal('TR Decorator');
-        expect(tcNode.length).to.equal(1);
-        expect(tcNode[0].innerHTML).to.equal('TC Decorator');
-        expect(tlNode.length).to.equal(1);
-        expect(tlNode[0].innerHTML).to.equal('TL Decorator');
-        expect(ccNode.length).to.equal(1);
-        expect(ccNode[0].innerHTML).to.equal('CC Decorator');
-        expect(blNode.length).to.equal(1);
-        expect(blNode[0].innerHTML).to.equal('BL Decorator');
-        expect(bcNode.length).to.equal(1);
-        expect(bcNode[0].innerHTML).to.equal('BC Decorator');
-        expect(brNode.length).to.equal(1);
-        expect(brNode[0].innerHTML).to.equal('BR Decorator');
+      component = mount(
+        <Carousel
+          decorators={[
+            topLeftDecorator,
+            topCenterDecorator,
+            topRightDecorator,
+            centerCenterDecorator,
+            bottomLeftDecorator,
+            bottomCenterDecorator,
+            bottomRightDecorator
+          ]}
+        >
+          <p>Slide 1</p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
+      );
+
+      var trNode = component.find('.tr-dec');
+      var tcNode = component.find('.tc-dec');
+      var tlNode = component.find('.tl-dec');
+      var ccNode = component.find('.cc-dec');
+      var blNode = component.find('.bl-dec');
+      var bcNode = component.find('.bc-dec');
+      var brNode = component.find('.br-dec');
+
+      expect(trNode).toHaveLength(1);
+      expect(trNode.at(0).text()).toEqual('TR Decorator');
+      expect(tcNode).toHaveLength(1);
+      expect(tcNode.at(0).text()).toEqual('TC Decorator');
+      expect(tlNode).toHaveLength(1);
+      expect(tlNode.at(0).text()).toEqual('TL Decorator');
+      expect(ccNode).toHaveLength(1);
+      expect(ccNode.at(0).text()).toEqual('CC Decorator');
+      expect(blNode).toHaveLength(1);
+      expect(blNode.at(0).text()).toEqual('BL Decorator');
+      expect(bcNode).toHaveLength(1);
+      expect(bcNode.at(0).text()).toEqual('BC Decorator');
+      expect(brNode).toHaveLength(1);
+      expect(brNode.at(0).text()).toEqual('BR Decorator');
     });
   });
 
@@ -593,6 +549,14 @@ describe('Carousel', function () {
 
     beforeEach(function() {
       setup();
+
+      component = mount(
+        <Carousel>
+          <p>Slide 1</p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
+      );
     });
 
     afterEach(function() {
@@ -600,117 +564,75 @@ describe('Carousel', function () {
     });
 
     it('should advance if nextSlide() is called', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, null,
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
+      component.instance().nextSlide();
 
-        component.nextSlide();
-
-        expect(component.state.currentSlide).to.equal(1);
+      expect(component.state('currentSlide')).toEqual(1);
     });
 
     it('should not advance if nextSlide() is called and the currentSlide is the last slide', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, null,
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
+      var instance = component.instance();
+      instance.nextSlide();
+      instance.nextSlide();
+      instance.nextSlide();
 
-        component.nextSlide();
-        component.nextSlide();
-        component.nextSlide();
-
-        expect(component.state.currentSlide).to.equal(2);
+      expect(component.state('currentSlide')).toEqual(2);
     });
 
     it('should not go back if previousSlide() is called and the currentSlide is the first slide', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, null,
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
+      component.instance().previousSlide();
 
-        component.previousSlide();
-
-        expect(component.state.currentSlide).to.equal(0);
+      expect(component.state('currentSlide')).toEqual(0);
     });
 
     it('should go back if previousSlide() is called', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, null,
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
+      component.instance().nextSlide();
+      component.instance().previousSlide();
 
-        component.nextSlide();
-        component.previousSlide();
-
-        expect(component.state.currentSlide).to.equal(0);
+      expect(component.state('currentSlide')).toEqual(0);
     });
 
     it('should advance, go back and wrap around if nextSlide() is called and wraparound is true', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, { wrapAround : true},
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
+      component = mount(
+        <Carousel wrapAround={true}>
+          <p>Slide 1</p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+        </Carousel>
+      );
 
-        component.nextSlide();
-        expect(component.state.currentSlide).to.equal(1);
-        component.nextSlide();
-        expect(component.state.currentSlide).to.equal(2);
-        component.nextSlide();
-        expect(component.state.currentSlide).to.equal(0);
-        component.previousSlide();
-        expect(component.state.currentSlide).to.equal(2);
+      var instance = component.instance();
+
+      instance.nextSlide();
+      expect(component.state('currentSlide')).toEqual(1);
+      instance.nextSlide();
+      expect(component.state('currentSlide')).toEqual(2);
+      instance.nextSlide();
+      expect(component.state('currentSlide')).toEqual(0);
+      instance.previousSlide();
+      expect(component.state('currentSlide')).toEqual(2);
     });
 
 
     it('should go to 2 if goToSlide(2) is called', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, null,
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3')
-          ),
-          container
-        );
-
-        component.goToSlide(2);
-
-        expect(component.state.currentSlide).to.equal(2);
+      component.instance().goToSlide(2);
+      expect(component.state('currentSlide')).toEqual(2);
     });
 
     it('should go to 2 if goToSlide(2) is called and in auto', function() {
-        component = ReactDOM.render(
-          React.createElement(carousel, {slidesToShow: 2, slidesToScroll: 'auto'},
-            React.createElement('p', null, 'Slide 1'),
-            React.createElement('p', null, 'Slide 2'),
-            React.createElement('p', null, 'Slide 3'),
-            React.createElement('p', null, 'Slide 4')
-          ),
-          container
-        );
-        component.nextSlide();
+      component = mount(
+        <Carousel
+          slidesToShow={2}
+          slidesToScroll='auto'
+        >
+          <p>Slide 1</p>
+          <p>Slide 2</p>
+          <p>Slide 3</p>
+          <p>Slide 4</p>
+        </Carousel>
+      );
 
-        expect(component.state.currentSlide).to.equal(2);
+      component.instance().nextSlide();
+      expect(component.state('currentSlide')).toEqual(2);
     });
 
   });
